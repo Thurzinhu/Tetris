@@ -2,40 +2,35 @@ PauseState = Class{__includes = BaseState}
 
 function PauseState:enter(params)
     gSounds.music:pause()
-
     self.board = params.board
+    self.currentBlock = params.currentBlock
+    self.nextBlock = params.nextBlock
     self.score = params.score
     self.level = params.level
-    self.timer = params.timer
-    self.goalScore = params.goalScore
-    self.timeSinceLastMatch = params.timeSinceLastMatch    
+    self.timer = params.timer 
 end
 
 function PauseState:update(dt)
-    if love.keyboard.wasPressed('p') or love.keyboard.wasPressed('enter') or love.keyboard.wasPressed('return') then
-        gStateMachine:change('play', {
+    if love.keyboard.wasPressed('p') then
+        gStateMachine:change('countdown', {
             board = self.board,
             score = self.score,
             level = self.level,
             timer = self.timer,
-            goalScore = self.goalScore,
-            timeSinceLastMatch = self.timeSinceLastMatch 
+            currentBlock = self.currentBlock,
+            nextBlock = self.nextBlock
         })
     end
 end
 
 function PauseState:render()
-    love.graphics.setColor(0, 0, 0, 0.7)
-    love.graphics.rectangle('fill', 40, 16, 160, 128, 4)
-    love.graphics.setColor(1, 1, 1, 1)
-
-    love.graphics.setFont(gFonts.small)
-    printWithShadow('Level: ' .. tostring(self.level), 45, 20, 155, 'center')
-    printWithShadow('Goal Score: ' .. tostring(self.goalScore), 45, 56, 155, 'center')
-    printWithShadow('Score: ' .. tostring(self.score), 45, 92, 155, 'center')
-    printWithShadow('Time Left: ' .. tostring(self.timer), 45, 124, 155, 'center')
-    
+    love.graphics.clear(1, 1, 1, 1)
+    self:renderStats()
     self.board:render()
+    self:renderNextBlockBox()
+    self.currentBlock:render(self.board.x, self.board.y)
+    self.currentBlock:getFinalPosition():render(self.board.x, self.board.y)
+    self:renderDarkBackground()
 end
 
 function PauseState:exit()

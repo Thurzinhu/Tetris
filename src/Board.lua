@@ -9,13 +9,25 @@ function Board:init(x, y)
     self.width = COLUMNS * TILE_SIZE
     self.height = ROWS * TILE_SIZE 
     self.tiles = {}
+    self.isGameOver = false
     self:setTiles()
 end
 
 function Board:update(dt)
-    local rowsMatched = self:resolveMatches()
-    
-    
+    local rowsCleared = self:resolveRowsCleared()
+    local points = {
+        [0] = 0,
+        [1] = 100,
+        [2] = 300,
+        [3] = 500,
+        [4] = 800
+    }
+
+    if rowsCleared > 0 then
+        gSounds['lineCleared']:play()
+    end
+
+    return points[rowsCleared]
 end
 
 function Board:setTiles()
@@ -25,12 +37,12 @@ function Board:setTiles()
     end
 end
 
-function Board:resolveMatches()
+function Board:resolveRowsCleared()
     self.tilesToFall = {}
-    local countRowsMatched = 0
+    local countRowsCleared = 0
     for y = ROWS, 1, -1 do
-        if self:checkMatch(y) then
-            countRowsMatched = countRowsMatched + 1
+        if self:isRowCleared(y) then
+            countRowsCleared = countRowsCleared + 1
             self:resetRow(y)
             self:shiftTilesDown(y)
             y = y + 1
@@ -39,10 +51,10 @@ function Board:resolveMatches()
 
     Timer.tween(0.25, self.tilesToFall)
 
-    return countRowsMatched
+    return countRowsCleared
 end
 
-function Board:checkMatch(row)
+function Board:isRowCleared(row)
     for x = 1, COLUMNS do
         local tile = self.tiles[row][x]
         if not tile then
@@ -73,8 +85,16 @@ end
 
 function Board:appendBlock(block)
     for _, tile in pairs(block.tiles) do
-        self.tiles[math.floor(tile.y / TILE_SIZE) + 1][math.floor(tile.x / TILE_SIZE) + 1] = tile
+        if tile.y <= 0 then
+            self.isGameOver = true
+        end
+        
+        if tile.y >= 0 then
+            self.tiles[math.floor(tile.y / TILE_SIZE) + 1][math.floor(tile.x / TILE_SIZE) + 1] = tile
+        end
     end
+
+    gSounds['appendBlock']:play()
 end
 
 function Board:coordinateToTile(x, y)
@@ -110,6 +130,20 @@ function Board:renderTiles()
     for _, row in pairs(self.tiles) do
         for _, tile in pairs(row) do
             tile:render(self.x, self.y)
+        end
+    end
+end
+
+function Board:generateSample()
+    for y = 1, ROWS do
+        for x = 1, COLUMNS do
+            if math.random(4) >= 2 then
+                self.tiles[y][x] = Tile {
+                    x = (x - 1) * TILE_SIZE,
+                    y = (y - 1) * TILE_SIZE,
+                    color = math.random(#gFrames['tiles'])
+                }
+            end
         end
     end
 end

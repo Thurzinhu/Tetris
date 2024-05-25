@@ -5,7 +5,9 @@ function Collision.BoardBlockCollision(board, block)
         block:moveLeft()
     elseif love.keyboard.wasPressed('left') and Collision.checkBoardBlockLeftCollision(board, block) then
         block:moveRight()
-    elseif Collision.checkBoardBlockFloorCollision(board, block) then
+    end
+    
+    if Collision.checkBoardBlockFloorCollision(board, block) then
         block:moveUp()
         board:appendBlock(block)
         block.inGame = false

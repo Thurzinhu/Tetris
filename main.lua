@@ -9,10 +9,15 @@ function love.load()
         resizable = true,
         fullscreen = false
     })
-    gStateMachine:change('play', {
-        score = 0,
-    })
+
+    gStateMachine:change('title')
+
+    gSounds['music']:setLooping(true)
+    gSounds['music']:setVolume(0.3)
+    gSounds['music']:play()
+
     love.keyboard.keysPressed = {}
+    love.mouse.buttonsPressed = {}
 end
 
 function love.resize(w, h)
@@ -26,6 +31,7 @@ function love.update(dt)
     Timer.update(dt)
     gStateMachine:update(dt)
     love.keyboard.keysPressed = {}
+    love.mouse.buttonsPressed = {}
 end
 
 function love.draw()
@@ -40,6 +46,14 @@ end
 
 function love.keyboard.wasPressed(key)
     return love.keyboard.keysPressed[key]
+end
+
+function love.mousepressed(x, y, button)
+    love.mouse.buttonsPressed[button] = true
+end
+
+function love.mouse.wasPressed(button)
+    return love.mouse.buttonsPressed[button]
 end
 
 function printWithShadow(text, x, y, limit, allign, highlightColor)

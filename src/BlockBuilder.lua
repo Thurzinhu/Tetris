@@ -11,7 +11,17 @@ function BlockBuilder.buildBlock(blockType, color)
         ['t_shape'] = BlockBuilder.buildTShapeBlock
     }
 
-    return (blockBuilders[BLOCK_TYPES[blockType]])(color)
+    return BlockBuilder.shiftBlockPosition((blockBuilders[BLOCK_TYPES[blockType]])(color), blockType)
+end
+
+function BlockBuilder.shiftBlockPosition(tiles, blockType)
+    local shift = (BLOCK_TYPES[blockType] == 'i_shape') and 3 or 4
+    for i = 1, shift do
+        for _, tile in pairs(tiles) do
+            tile.x = tile.x + TILE_SIZE
+        end
+    end
+    return tiles
 end
 
 function BlockBuilder.buildOShapeBlock(color)

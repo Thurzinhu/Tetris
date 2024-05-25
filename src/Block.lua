@@ -11,6 +11,7 @@ function Block:init(def)
     self.inGame = true
     self.timer = 0
     self.downCounter = 0
+    self.fallRate = 1
 end
 
 function Block:getRandomBlock()
@@ -25,8 +26,10 @@ function Block:update(dt)
     self.timer = self.timer + dt
     if love.keyboard.wasPressed('right') then
         self:moveRight()
+        gSounds['moveBlock']:play()
     elseif love.keyboard.wasPressed('left') then
         self:moveLeft()
+        gSounds['moveBlock']:play()
     end
     if love.keyboard.isDown('down') then
         self.downCounter = self.downCounter + DOWN_SPEED
@@ -35,12 +38,13 @@ function Block:update(dt)
             self.downCounter = self.downCounter % TILE_SIZE
         end
         self.timer = 0
-    elseif self.timer >= 1 then
-        self.timer = self.timer % 1
+    elseif self.timer >= self.fallRate then
+        self.timer = self.timer % self.fallRate
         self:moveDown()
     end
     if love.keyboard.wasPressed('up') then
         self:rotate()
+        gSounds['moveBlock']:play()
     end
 end
 

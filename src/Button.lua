@@ -2,13 +2,13 @@ Button = Class{}
 
 local highlightColor = {255/255, 255/255, 80/255, 1}
 
-function Button:init(x, y, width, height, text, isSelected)
-    self.x = x
-    self.y = y
-    self.width = width
-    self.height = height
-    self.text = text
-    self.isSelected = isSelected or false
+function Button:init(def)
+    self.x = def.x
+    self.y = def.y
+    self.width = def.width
+    self.height = def.height
+    self.text = def.text
+    self.isSelected = def.isSelected or false
 end
 
 function Button:wasPressed(mouse)
