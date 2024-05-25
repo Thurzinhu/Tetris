@@ -26,7 +26,7 @@ function BaseState:renderNextBlockBox()
     love.graphics.rectangle('line', box.x, box.y, box.width, box.height)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.setFont(gFonts.small)
-    printWithShadow('Next', VIRTUAL_WIDTH / 2 + 32, box.y + box.height + 2, VIRTUAL_WIDTH / 4, 'right', {113/255, 156/255, 170/255, 1})
+    printWithShadow('Next', VIRTUAL_WIDTH / 2 + 32, box.y + box.height + 2, VIRTUAL_WIDTH / 4, 'right', {153/255, 153/255, 255/255, 1})
     love.graphics.setColor(1, 1, 1, 1)
     if self.nextBlock then
         self:renderNextBlock(box)
