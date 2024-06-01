@@ -1,5 +1,8 @@
 PauseState = Class{__includes = BaseState}
 
+-- TODO
+-- Add button quit and continue game buttons
+
 function PauseState:enter(params)
     gSounds.music:pause()
     self.board = params.board

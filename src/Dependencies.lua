@@ -42,6 +42,9 @@ gSounds = {
     ['tick'] = love.audio.newSource('sounds/tick.wav', 'static'),
     ['nextLevel'] = love.audio.newSource('sounds/nextLevel.mp3', 'static'),
 }
+gSounds['music']:setLooping(true)
+gSounds['music']:setVolume(0.3)
+gSounds['nextLevel']:setVolume(0.3)
 
 gStateMachine = StateMachine {
     ['title'] = function() return TitleScreenState() end, 

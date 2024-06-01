@@ -18,10 +18,8 @@ function PlayState:update(dt)
     local points = self.board:update(dt)
     self.score = self.score + points
 
-    if self.score >= self.goalScore then
-        self.level = self.level + 1
-        self.goalScore = 300 + (self.level * 210)
-        gSounds['nextLevel']:play()
+    if self:hasReachedGoalScore() then
+        self:advanceToNextLevel()
     end
 
     if self.currentBlock and self.currentBlock.inGame then
@@ -58,4 +56,14 @@ function PlayState:render()
     self:renderNextBlockBox()
     self.currentBlock:render(self.board.x, self.board.y)
     self.currentBlock:getFinalPosition():render(self.board.x, self.board.y)
+end
+
+function PlayState:hasReachedGoalScore()
+    return self.score >= self.goalScore
+end
+
+function PlayState:advanceToNextLevel()
+    self.level = self.level + 1
+    self.goalScore = 300 + (self.level * 210)
+    gSounds['nextLevel']:play()
 end

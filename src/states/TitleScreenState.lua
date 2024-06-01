@@ -17,6 +17,11 @@ function TitleScreenState:init()
     })
     self.board = Board(233, 16)
     self.board:generateSample()
+    Timer.after(2, 
+        function()
+            self.board:update(dt)
+        end
+    )
 end
 
 function TitleScreenState:enter()

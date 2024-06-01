@@ -39,19 +39,18 @@ end
 
 function Board:resolveRowsCleared()
     self.tilesToFall = {}
-    local countRowsCleared = 0
-    for y = ROWS, 1, -1 do
+    local rowsCleared = 0
+    for y = 1, ROWS do
         if self:isRowCleared(y) then
-            countRowsCleared = countRowsCleared + 1
+            rowsCleared = rowsCleared + 1
             self:resetRow(y)
             self:shiftTilesDown(y)
-            y = y + 1
         end
     end
 
     Timer.tween(0.25, self.tilesToFall)
 
-    return countRowsCleared
+    return rowsCleared
 end
 
 function Board:isRowCleared(row)
@@ -74,9 +73,9 @@ function Board:shiftTilesDown(matchedRow)
     for column = 1, COLUMNS do
         for row = matchedRow - 1, 1, -1 do
             local curTile = self.tiles[row][column]
+            self.tiles[row + 1][column] = curTile
+            self.tiles[row][column] = nil
             if curTile then 
-                self.tiles[row + 1][column] = curTile
-                self.tiles[row][column] = nil
                 self.tilesToFall[curTile] = {y = ((row + 1) - 1) * TILE_SIZE}
             end
         end
@@ -137,7 +136,7 @@ end
 function Board:generateSample()
     for y = 1, ROWS do
         for x = 1, COLUMNS do
-            if math.random(4) >= 2 then
+            if math.random(6) >= 2 then
                 self.tiles[y][x] = Tile {
                     x = (x - 1) * TILE_SIZE,
                     y = (y - 1) * TILE_SIZE,
