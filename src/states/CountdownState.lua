@@ -14,6 +14,7 @@ function CountdownState:enter(params)
     self.score = params.score
     self.level = params.level
     self.timer = params.timer
+    self.blockFallRate = params.blockFallRate
 end
 
 function CountdownState:update(dt)
@@ -31,7 +32,8 @@ function CountdownState:update(dt)
                 level = self.level,
                 timer = self.timer,
                 currentBlock = self.currentBlock,
-                nextBlock = self.nextBlock
+                nextBlock = self.nextBlock,
+                blockFallRate = self.blockFallRate
             })
         end
     end

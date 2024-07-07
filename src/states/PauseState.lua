@@ -10,7 +10,8 @@ function PauseState:enter(params)
     self.nextBlock = params.nextBlock
     self.score = params.score
     self.level = params.level
-    self.timer = params.timer 
+    self.timer = params.timer
+    self.blockFallRate = params.blockFallRate
 end
 
 function PauseState:update(dt)
@@ -21,7 +22,8 @@ function PauseState:update(dt)
             level = self.level,
             timer = self.timer,
             currentBlock = self.currentBlock,
-            nextBlock = self.nextBlock
+            nextBlock = self.nextBlock,
+            blockFallRate = self.blockFallRate
         })
     end
 end

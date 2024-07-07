@@ -7,7 +7,10 @@ function Collision.BoardBlockCollision(board, block)
         block:moveRight()
     end
     
-    if Collision.checkBoardBlockFloorCollision(board, block) then
+    if love.keyboard.wasPressed('space') then
+        board:appendBlock(block)
+        block.inGame = false
+    elseif Collision.checkBoardBlockFloorCollision(board, block) then
         block:moveUp()
         board:appendBlock(block)
         block.inGame = false
@@ -45,19 +48,7 @@ function Collision.checkBoardBlockFloorCollision(board, block)
 end
 
 function Collision.checkValidRotation(board, block)
-    for _, tile in pairs(block.tiles) do
-        while tile.x < 0 do
-            block:moveRight()
-        end
-
-        while tile.x > board.width - TILE_SIZE do
-            block:moveLeft()
-        end
-
-        while tile.y < 0 do
-            block:moveDown()
-        end
-    end
+    putBlockInBoardBoundaries(board, block)
 
     for _, tile in pairs(block.tiles) do
         local blockAtCoordinate = board:coordinateToTile(tile.x, tile.y)
@@ -65,6 +56,21 @@ function Collision.checkValidRotation(board, block)
             return false
         end
     end
-
     return true
+end
+
+function putBlockInBoardBoundaries(board, block)
+    for _, tile in pairs(block.tiles) do
+        if tile.x < 0 then
+            block:moveRight()
+        elseif tile.x > board.width - TILE_SIZE then
+            block:moveLeft()
+        end
+
+        if tile.y < 0 then
+            block:moveDown()
+        elseif tile.y > board.height - TILE_SIZE then
+            block:moveUp()
+        end
+    end
 end

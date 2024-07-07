@@ -11,7 +11,8 @@ function PlayState:enter(params)
     self.score = params.score
     self.level = params.level
     self.timer = params.timer
-    self.goalScore = self.level == 1 and 300 or 300 + (self.level * 140)
+    self.goalScore = self.level == 1 and 300 or 300 + (self.level * 210)
+    self.blockFallRate = params.blockFallRate or 1
 end
 
 function PlayState:update(dt)
@@ -44,7 +45,8 @@ function PlayState:update(dt)
             level = self.level,
             timer = self.timer,
             currentBlock = self.currentBlock,
-            nextBlock = self.nextBlock
+            nextBlock = self.nextBlock,
+            blockFallRate = self.blockFallRate
         })
     end
 end
@@ -63,7 +65,9 @@ function PlayState:hasReachedGoalScore()
 end
 
 function PlayState:advanceToNextLevel()
+    local minimumFallRate = 0.05
     self.level = self.level + 1
     self.goalScore = 300 + (self.level * 210)
+    self.blockFallRate = math.max(minimumFallRate, self.blockFallRate - 0.03)
     gSounds['nextLevel']:play()
 end

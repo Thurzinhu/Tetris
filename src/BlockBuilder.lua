@@ -16,10 +16,8 @@ end
 
 function BlockBuilder.shiftBlockPosition(tiles, blockType)
     local shift = (BLOCK_TYPES[blockType] == 'i_shape') and 3 or 4
-    for i = 1, shift do
-        for _, tile in pairs(tiles) do
-            tile.x = tile.x + TILE_SIZE
-        end
+    for _, tile in pairs(tiles) do
+        tile.x = tile.x + shift*TILE_SIZE
     end
     return tiles
 end
@@ -49,7 +47,8 @@ function BlockBuilder.buildIShapeBlock(color)
         table.insert(tiles, Tile({
             x = tileX,
             y = tileY,
-            color = color
+            color = color,
+            isPivot = (x == 2)
         }))
     end
     return tiles
@@ -69,7 +68,8 @@ function BlockBuilder.buildJShapedBlock(color)
         table.insert(tiles, Tile(Tile({
             x = tileX,
             y = tileY,
-            color = color
+            color = color,
+            isPivot = (x == 2)
         })))
     end
     return tiles
@@ -89,7 +89,8 @@ function BlockBuilder.buildLShapedBlock(color)
         table.insert(tiles, Tile(Tile({
             x = tileX,
             y = tileY,
-            color = color
+            color = color,
+            isPivot = (x == 2)
         })))
     end
     return tiles
@@ -105,7 +106,8 @@ function BlockBuilder.buildZShapedBlock(color)
             table.insert(tiles, Tile({
                 x = tileX,
                 y = tileY,
-                color = color
+                color = color,
+                isPivot = (y == 1 and x == 2)
             }))
         end
     end
@@ -122,7 +124,8 @@ function BlockBuilder.buildSShapedBlock(color)
             table.insert(tiles, Tile({
                 x = tileX,
                 y = tileY,
-                color = color
+                color = color,
+                isPivot = (y == 1 and x == 1)
             }))
         end
     end
@@ -135,7 +138,8 @@ function BlockBuilder.buildTShapeBlock(color)
     table.insert(tiles, Tile({
         x = tileX,
         y = tileY,
-        color = color
+        color = color,
+        isPivot = true
     }))
     tileY = TILE_SIZE
     for x = 1, 3 do

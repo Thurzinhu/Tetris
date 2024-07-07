@@ -11,7 +11,6 @@ function Block:init(def)
     self.inGame = true
     self.timer = 0
     self.downCounter = 0
-    self.fallRate = 1
 end
 
 function Block:getRandomBlock()
@@ -22,7 +21,7 @@ function Block:getRandomColor()
     return math.random(#gFrames['tiles'])
 end
 
-function Block:update(dt)
+function Block:update(dt, fallRate)
     self.timer = self.timer + dt
     if love.keyboard.wasPressed('right') then
         self:moveRight()
@@ -31,15 +30,17 @@ function Block:update(dt)
         self:moveLeft()
         gSounds['moveBlock']:play()
     end
-    if love.keyboard.isDown('down') then
+    if love.keyboard.wasPressed('space') then
+        self.tiles = self:getFinalPosition().tiles
+    elseif love.keyboard.isDown('down') then
         self.downCounter = self.downCounter + DOWN_SPEED
         if self.downCounter >= TILE_SIZE then
             self:moveDown()
             self.downCounter = self.downCounter % TILE_SIZE
         end
         self.timer = 0
-    elseif self.timer >= self.fallRate then
-        self.timer = self.timer % self.fallRate
+    elseif self.timer >= fallRate then
+        self.timer = self.timer % fallRate
         self:moveDown()
     end
     if love.keyboard.wasPressed('up') then
@@ -72,41 +73,32 @@ function Block:moveRight()
     end 
 end
 
--- clockwise
--- rotation matriz
-
--- [xCos(90) - ySin(90)]
--- [xSen(90) + yCos(90)]
--- [-(y)]
--- [+(x)]
 function Block:rotate()
-    local tilesBackup = {}
-    local minX, minY = self.board.width, self.board.height
-    for _, tile in pairs(self.tiles) do
-        minX = math.min(tile.x, minX)
-        minY = math.min(tile.y, minY)
-    end
+    local backupBlock = self:makeCopy()
+    local pivotTile = self:getPivotTile()
 
-    for _, tile in pairs(self.tiles) do
-        local x, y = tile.x, tile.y
-        tile.x = tile.x - minX
-        tile.y = tile.y - minY
-        table.insert(tilesBackup, Tile {
-            x = x,
-            y = y,
-            color = self.color
-        })
+    if not pivotTile then
+        return
     end
-
+  
     for _, tile in pairs(self.tiles) do
-        local x, y = tile.x, tile.y
-        tile.x = -y + minX
-        tile.y = x + minY
+        local x, y = tile.x - pivotTile.x, tile.y - pivotTile.y
+        tile.x = -y + pivotTile.x
+        tile.y = x + pivotTile.y
     end
 
     if not Collision.checkValidRotation(self.board, self) then
-        self.tiles = tilesBackup
+        self.tiles = backupBlock.tiles
     end
+end
+
+function Block:getPivotTile()
+    for _, tile in pairs(self.tiles) do
+        if tile.isPivot then
+            return tile
+        end
+    end
+    return nil
 end
 
 function Block:getFinalPosition()
@@ -129,7 +121,8 @@ function Block:makeCopy()
         table.insert(other.tiles, Tile {
             x = tile.x,
             y = tile.y,
-            color = self.color
+            color = self.color,
+            isPivot = tile.isPivot
         })
     end
     return Block(other)
