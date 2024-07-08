@@ -139,7 +139,6 @@ function BlockBuilder.buildTShapeBlock(color)
         x = tileX,
         y = tileY,
         color = color,
-        isPivot = true
     }))
     tileY = TILE_SIZE
     for x = 1, 3 do
@@ -147,7 +146,8 @@ function BlockBuilder.buildTShapeBlock(color)
         table.insert(tiles, Tile({
             x = tileX,
             y = tileY,
-            color = color
+            color = color,
+            isPivot = (x == 2)
         }))
     end
     return tiles

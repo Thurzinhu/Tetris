@@ -103,6 +103,7 @@ end
 
 function Block:getFinalPosition()
     local finalPosition = self:makeCopy()
+    finalPosition.isSample = true
     while not Collision.checkBoardBlockFloorCollision(self.board, finalPosition) do
         finalPosition:moveDown()
     end
@@ -114,8 +115,7 @@ function Block:makeCopy()
     other = {
         blockType = self.blockType,
         color = self.color,
-        tiles = {},
-        isSample = true
+        tiles = {}
     }
     for _, tile in pairs(self.tiles) do
         table.insert(other.tiles, Tile {
